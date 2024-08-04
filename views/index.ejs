@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Payment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Payment</h1>
+      <button id="authorize" onclick="processPayment()">Authorize</button>
+      <div id="payment-element"></div>
+
+
+      <div id="messages" role="alert" style="display: none"></div>
+    </main>
+    <script>
+      const processPayment = async function () {
+        let response = await fetch("http://localhost:3001/");
+        console.log("response", response);
+        if (!response.ok) {
+          console.log("Failed to get secret key");
+          return;
+        }
+        response = await response.json();
+        console.log("response", response);
+        const stripe = Stripe(
+          "testing"
+        );
+        const appearance = {
+          /* appearance */
+        };
+        const options = {
+          /* options */
+        };
+        const elements = stripe.elements({
+          clientSecret: response.clientSecret,
+          appearance,
+        });
+        const paymentElement = elements.create("payment", options);
+        paymentElement.mount("#payment-element");
+      };
+    </script>
+  </body>
+</html>
